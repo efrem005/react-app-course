@@ -1,20 +1,12 @@
 import { JobPosition } from './JobPosition';
-import { useDispatch, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { addFilter } from "../store/actions/filterActions.js";
-import { selectFilters } from "../store/selectors/filterSelectors.js";
 import { selectVisiblePositions } from "../store/selectors/positionSelectors.js";
 
-const JobList = () => {
-
-  const dispatch = useDispatch()
-  const currentFilters = useSelector(selectFilters)
-  const positions = useSelector(state =>
-    selectVisiblePositions(state, currentFilters)
-  )
-
+const _JobList = ({positions, addFilter}) => {
 
   const handleAddFilter = (filter) => {
-    dispatch(addFilter(filter))
+    addFilter(filter)
   }
 
   return (
@@ -30,4 +22,9 @@ const JobList = () => {
   )
 }
 
-export {JobList};
+export const JobList = connect(
+    (state) => ({
+      positions: selectVisiblePositions(state, state.filters)
+    }),
+    {addFilter}
+)(_JobList);
